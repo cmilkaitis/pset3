@@ -13,77 +13,96 @@ int duration(string fraction)
     int numer = fraction[0] - '0';
     int denom = fraction[2] - '0';
 
-    // TODO
-    if (strlen(fraction) > 1)
+    if (denom == 4)
     {
-        if (fraction[2] == 8)
-        {
-            return numer;
-        }
-        if (fraction[2] == 4)
-        {
-            return 2;
-        }
-        if (fraction[2] == 2)
-        {
-            return 4;
-        }
+        return 2;
     }
-    return 8;
+    if (denom == 2)
+    {
+        return 4;
+    }
+
+    return numer;
 }
 
 // Calculates frequency (in Hz) of a note
 int frequency(string note)
 {
     char n = note[0];
-    //int o = atoi(note[1]);
-    printf("%c", n);
+    char acc = '\0';
+    int octive = note[1] - '0';
+    double distance = 0.0, octHertz = 0.0;
 
-   /* if (strlen(note) == 3)
+// Determine the distance between notes from A and account for sharp or flat if strlen is 3
+
+    if (strlen(note) == 3)
     {
-        char a = note[1];
-        o = atoi(note[2]);
+        octive = note[2] - '0';
+        acc = note[1];
 
-        if (n == 'A')
+        if (acc == '#')
         {
-
+            distance += 1.0;
+        }
+        else if (acc == 'b')
+        {
+            distance -= 1.0;
         }
     }
 
-    if (n == 'A')
+    if (n == 'C')
     {
-        int diff = o - 4;
+        distance -= 9.0;
+    }
+    else if (n == 'D')
+    {
+        distance -= 7.0;
+    }
+    else if (n == 'E')
+    {
+        distance -= 5.0;
+    }
+    else if (n == 'F')
+    {
+        distance -= 4.0;
+    }
+    else if (n == 'G')
+    {
+        distance -= 2.0;
+    }
+    else if (n == 'B')
+    {
+        distance += 2.0;
+    }
 
-        if (diff != 0)
-        {
-            if (diff >= 1)
-            {
-                return 440 * (diff * 2);
-            }
+// Determine octive hertz
 
-            return 440 / (abs(diff) * 2);
-        }
-        return 440;
-    }*/
-    return 0;
+    if (octive > 4)
+    {
+        octHertz = ((octive - 4.0) * 2.0) * 440.0;
+    }
+    else if (octive < 4)
+    {
+        octHertz = 440.0 / ((4.0 - octive) * 2.0);
+    }
+    else
+    {
+        octHertz = 440.0;
+    }
+
+// Return the final hertz
+
+    return round(pow(2, distance / 12) * octHertz);
 }
 
 // Determines whether a string represents a rest
 bool is_rest(string s)
 {
-    return s == NULL;
+    if (strlen(s) == 0)
+    {
+        return true;
+    }
+
+    return false;
 }
 
-
-/*
-
-A4 is 440
-
-For every semitone UP we move, we MULTIPLY the freq by 2 ^ 1/12
-
-For every semitone DOWN we move, we DIVIDE the freq by 2 ^ 1/12
-
-A  B  C  D  E  F  G
-65 66 67 68 69 70 71
-
-*/
